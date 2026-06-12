@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#071018" />
+    <title>霓虹回路 | Neon Loop</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main id="app" aria-label="霓虹回路游戏">
+      <canvas id="game-canvas" aria-label="游戏画面"></canvas>
+
+      <section id="hud" class="hud" aria-live="polite">
+        <div class="hud-metrics">
+          <div class="metric">
+            <span>Score</span>
+            <strong id="score-value">0</strong>
+          </div>
+          <div class="metric">
+            <span>Best</span>
+            <strong id="best-value">0</strong>
+          </div>
+          <div class="metric">
+            <span>Level</span>
+            <strong id="level-value">1</strong>
+          </div>
+          <div class="metric">
+            <span>Time</span>
+            <strong id="time-value">00:00</strong>
+          </div>
+          <div class="meter">
+            <span>HP</span>
+            <div class="meter-track"><i id="hp-bar"></i></div>
+            <b id="hp-value">7/7</b>
+          </div>
+          <div class="meter">
+            <span>XP</span>
+            <div class="meter-track"><i id="xp-bar"></i></div>
+            <b id="xp-value">0/10</b>
+          </div>
+          <div class="meter skill-meter">
+            <span>Skill</span>
+            <div class="meter-track"><i id="skill-bar"></i></div>
+            <b id="skill-value">0/5</b>
+          </div>
+        </div>
+        <div class="hud-actions">
+          <button id="pause-button" type="button">Pause</button>
+          <button id="restart-button" type="button">Restart</button>
+          <button id="mute-button" type="button">Sound On</button>
+        </div>
+      </section>
+
+      <div id="upgrade-strip" class="upgrade-strip" aria-live="polite"></div>
+      <div class="control-hint">WASD / arrow keys or drag to steer. Auto-fire handles threats.</div>
+
+      <section id="title-screen" class="overlay">
+        <div class="overlay-panel title-panel">
+          <p class="kicker">Neon Loop</p>
+          <h1>霓虹回路</h1>
+          <p class="brief">
+            驾驶霓虹无人机，在敌群里闪避、自动开火、拾取能量并选择升级。吃满 5 个经验球会自动释放星环齐射。
+          </p>
+          <div class="button-row">
+            <button id="start-button" type="button" class="primary-action">Start Run</button>
+          </div>
+          <p class="microcopy">键盘移动，鼠标或触屏按住拖动也可以移动。按 P 暂停，M 静音。</p>
+        </div>
+      </section>
+
+      <section id="pause-screen" class="overlay hidden">
+        <div class="overlay-panel">
+          <p class="kicker">Run Paused</p>
+          <h2>暂停中</h2>
+          <p class="brief">呼吸一下，回路还在等你。</p>
+          <div class="button-row">
+            <button id="resume-button" type="button" class="primary-action">Resume</button>
+            <button id="pause-restart-button" type="button">Restart</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="upgrade-screen" class="overlay hidden">
+        <div class="overlay-panel upgrade-panel">
+          <p class="kicker">Circuit Upgrade</p>
+          <h2>选择一个强化</h2>
+          <div id="upgrade-options" class="upgrade-options"></div>
+        </div>
+      </section>
+
+      <section id="gameover-screen" class="overlay hidden">
+        <div class="overlay-panel">
+          <p class="kicker">Signal Lost</p>
+          <h2>回路断开</h2>
+          <div id="run-stats" class="run-stats"></div>
+          <div class="button-row">
+            <button id="gameover-restart-button" type="button" class="primary-action">Restart</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
