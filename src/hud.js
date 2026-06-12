@@ -61,6 +61,11 @@ export function syncScreens() {
   ui.pauseButton.textContent = mode === 'paused' ? 'Resume' : 'Pause';
   ui.muteButton.textContent = settings.muted ? 'Sound Off' : 'Sound On';
 
+  if (ui.autoFireButton) {
+    ui.autoFireButton.textContent = game?.autoFire ? 'Auto: ON' : 'Auto: OFF';
+    ui.autoFireButton.classList.toggle('active', game?.autoFire ?? false);
+  }
+
   if (mode === 'gameover') {
     updateFinalStats();
   }

@@ -15,7 +15,7 @@ import { ensureAudio } from './audio.js';
 import { pointerPosition } from './input.js';
 import {
   startRun, restartRun, togglePause, toggleMute,
-  setMode, updateGame, applyUpgrade
+  setMode, updateGame, applyUpgrade, manualFire
 } from './systems.js';
 import { render } from './render.js';
 import { updateHud, syncScreens } from './hud.js';
@@ -34,14 +34,23 @@ function setupEvents() {
   ui.pauseButton.addEventListener('click', togglePause);
   ui.restartButton.addEventListener('click', restartRun);
   ui.muteButton.addEventListener('click', toggleMute);
+  ui.autoFireButton.addEventListener('click', () => {
+    if (!game) return;
+    game.autoFire = !game.autoFire;
+    ui.autoFireButton.textContent = game.autoFire ? 'Auto: ON' : 'Auto: OFF';
+    ui.autoFireButton.classList.toggle('active', game.autoFire);
+  });
 
   // 指针按下（拖拽开始）
   canvas.addEventListener('pointerdown', (event) => {
     ensureAudio();
     canvas.setPointerCapture(event.pointerId);
+    const pos = pointerPosition(event);
     input.pointer.dragging = true;
     input.pointer.pointerId = event.pointerId;
-    Object.assign(input.pointer, pointerPosition(event));
+    input.pointer.startX = pos.x;
+    input.pointer.startY = pos.y;
+    Object.assign(input.pointer, pos);
   });
 
   // 指针移动（拖拽中）
@@ -50,9 +59,16 @@ function setupEvents() {
     Object.assign(input.pointer, pointerPosition(event));
   });
 
-  // 指针释放
+  // 指针释放（区分点击与拖拽）
   window.addEventListener('pointerup', (event) => {
     if (input.pointer.pointerId === event.pointerId) {
+      const pos = pointerPosition(event);
+      const dx = pos.x - input.pointer.startX;
+      const dy = pos.y - input.pointer.startY;
+      const dist = Math.hypot(dx, dy);
+      if (dist < 10 && game?.mode === 'playing' && !game.autoFire) {
+        manualFire(pos.x, pos.y);
+      }
       input.pointer.dragging = false;
       input.pointer.pointerId = null;
     }

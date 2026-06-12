@@ -203,6 +203,7 @@ export function fireWeapon(delta) {
   player.fireTimer -= delta;
 
   if (player.fireTimer > 0) return;
+  if (!game.autoFire) return;
   if (game.enemies.length === 0 && !input.pointer.dragging) return;
 
   const aim = getAimVector();
@@ -233,6 +234,32 @@ export function fireWeapon(delta) {
   if (game.shotCounter % 3 === 0) {
     playSound('shot');
   }
+}
+
+export function manualFire(targetX, targetY) {
+  const player = game.player;
+  const aim = normalize(targetX - player.x, targetY - player.y);
+  if (!aim || aim.length === 0) return;
+
+  player.lastAim = { x: aim.x, y: aim.y };
+  const spread = [-0.12, -0.04, 0.04, 0.12];
+
+  for (const angle of spread) {
+    const direction = rotateVector(aim, angle);
+    game.bullets.push({
+      x: player.x + direction.x * (player.radius + 8),
+      y: player.y + direction.y * (player.radius + 8),
+      vx: direction.x * player.bulletSpeed,
+      vy: direction.y * player.bulletSpeed,
+      radius: 4,
+      damage: player.bulletDamage,
+      pierce: player.bulletPierce,
+      life: 1.5,
+      color: '#31d9ff'
+    });
+  }
+  player.fireTimer = 0.25;
+  playSound('shot');
 }
 
 export function triggerStarburst() {

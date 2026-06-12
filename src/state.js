@@ -31,7 +31,8 @@ export const ui = {
   gameoverScreen: document.querySelector('#gameover-screen'),
   upgradeOptions: document.querySelector('#upgrade-options'),
   upgradeStrip: document.querySelector('#upgrade-strip'),
-  runStats: document.querySelector('#run-stats')
+  runStats: document.querySelector('#run-stats'),
+  autoFireButton: document.querySelector('#auto-fire-button')
 };
 
 // ── 输入状态 ──
@@ -41,7 +42,9 @@ export const input = {
     dragging: false,
     pointerId: null,
     x: 0,
-    y: 0
+    y: 0,
+    startX: 0,
+    startY: 0
   }
 };
 
@@ -82,6 +85,7 @@ export function createGame(mode = 'title') {
     spawnMeter: 0,
     shotCounter: 0,
     shake: 0,
+    autoFire: false,
     choices: [],
     upgrades: {},
     bullets: [],

@@ -419,6 +419,8 @@ async function runSmoke() {
     );
     await click(cdp, startPoint);
     await delay(500);
+    await evaluate(cdp, 'document.querySelector("#auto-fire-button").click()');
+    await delay(100);
     snapshot = await evaluate(cdp, 'window.__NEON_LOOP_TEST_API__.getSnapshot()');
     assert(snapshot.mode === 'playing', 'Start run did not enter playing mode.');
     assert(snapshot.time > 0, 'Game loop did not advance after starting.');
@@ -448,7 +450,7 @@ async function runSmoke() {
     await delay(3200);
     snapshot = await evaluate(cdp, 'window.__NEON_LOOP_TEST_API__.getSnapshot()');
     assert(snapshot.enemies > 0 || snapshot.kills > 0, 'Enemy spawning did not produce enemies or kills.');
-    assert(snapshot.bullets > 0 || snapshot.kills > 0, 'Auto-fire did not produce bullets or kills.');
+    assert(snapshot.bullets > 0 || snapshot.kills > 0, 'Weapon did not produce bullets or kills after toggling auto-fire on.');
 
     await evaluate(cdp, 'window.__NEON_LOOP_TEST_API__.resetSkillTestState()');
     snapshot = await evaluate(cdp, 'window.__NEON_LOOP_TEST_API__.collectExperienceOrbs(5)');
@@ -469,6 +471,24 @@ async function runSmoke() {
     snapshot = await evaluate(cdp, 'window.__NEON_LOOP_TEST_API__.collectExperienceOrbs(5)');
     assert(snapshot.starburstTimer > firstStarburstTimer, 'Starburst did not extend when charged during activation.');
     assert(snapshot.starburstTimer <= 4.5, 'Starburst extension exceeded the 4.5 second cap.');
+
+    // 关闭 auto-fire，测试手动点击射击
+    await evaluate(cdp, 'document.querySelector("#auto-fire-button").click()');
+    await delay(200);
+    const canvasRect = await evaluate(
+      cdp,
+      `(() => {
+        const rect = document.querySelector('#game-canvas').getBoundingClientRect();
+        return { left: rect.left, top: rect.top, width: rect.width, height: rect.height };
+      })()`
+    );
+    await click(cdp, { x: canvasRect.left + canvasRect.width * 0.6, y: canvasRect.top + canvasRect.height * 0.5 });
+    await delay(150);
+    snapshot = await evaluate(cdp, 'window.__NEON_LOOP_TEST_API__.getSnapshot()');
+    assert(snapshot.bullets > 0, 'Manual click did not produce bullets.');
+    // 重新开启 auto-fire 以便后续测试
+    await evaluate(cdp, 'document.querySelector("#auto-fire-button").click()');
+    await delay(100);
 
     await evaluate(
       cdp,

@@ -194,6 +194,26 @@ button:active {
   background: rgba(42, 90, 54, 0.92);
 }
 
+.auto-fire-btn {
+  font-weight: 700;
+  border: 1px solid rgba(49, 217, 255, 0.35);
+  background: rgba(11, 24, 38, 0.78);
+  color: var(--muted);
+}
+
+.auto-fire-btn:hover,
+.auto-fire-btn:focus-visible {
+  border-color: var(--green);
+  background: rgba(17, 41, 55, 0.96);
+  outline: none;
+}
+
+.auto-fire-btn.active {
+  border-color: var(--green);
+  background: rgba(42, 90, 54, 0.92);
+  color: var(--text);
+}
+
 .upgrade-strip {
   position: absolute;
   z-index: 4;
